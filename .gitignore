@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+/test_artifacts/
+**/dsdt_generated_code/
+*.tar.gz

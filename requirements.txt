@@ -1,0 +1,5 @@
+kfp
+disdat
+boto3
+pytest
+pytest-xdist
