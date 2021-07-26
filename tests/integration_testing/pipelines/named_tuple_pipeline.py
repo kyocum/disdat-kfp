@@ -35,9 +35,9 @@ pipeline_name = __file__.split('/')[-1].replace('.py', '')
     name=pipeline_name
 )
 def pipeline():
-    # kfp.dsl.get_pipeline_conf().add_op_transformer(mlp_transformer(model="disdatnoop"))
 
     container_op = components.create_component_from_func(container, base_image=config.BASE_IMAGE)
+
     integrity_check_op = components.create_component_from_func(integrity_check, base_image=config.BASE_IMAGE)
 
     validate_execution = components.create_component_from_func(validate_container_execution,

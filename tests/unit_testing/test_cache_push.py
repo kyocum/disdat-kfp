@@ -6,12 +6,13 @@ from typing import NamedTuple, Callable, List
 import inspect
 import shutil
 import random
+from tests import config
 
 
-s3_path = 's3://disdat-kubeflow-playground'
+s3_path = config.UNIT_TEST_S3_BUCKET
 context_name = 'kfp-caching-plugin-v2-cache_push'
-src_dir = 'test_artifacts/generated_data'
-unzip_path = 'test_artifacts/saved_data'
+src_dir = config.ARTIFACT_DIR + '/generated_data'
+unzip_path = config.ARTIFACT_DIR + '/saved_data'
 
 
 @pytest.fixture
@@ -29,6 +30,11 @@ def prep_caching_push() -> Callable:
 
 
 def prep_fake_data(variable_list: List) -> dict:
+    """
+    generate fake data and put them in temp location (mock KFP behavior)
+    :param variable_list: variables to pass in
+    :return: dict, disdat args and values
+    """
     if os.path.isdir(src_dir):
         os.system('rm -r {}'.format(src_dir))
     fake_data = {}
@@ -47,8 +53,17 @@ def data_content_validator(bundle_name: str,
                            bundle_uuid: str,
                            expected_params: dict,
                            expected_fields: list) -> None:
+    """
+    verify data pushed to S3 does not miss any file
+    :param bundle_name: str, name of the bundle
+    :param bundle_uuid: str, uuid
+    :param expected_params: dict, parameters to check
+    :param expected_fields: list, what data is saved
+    :return:
+    """
     api.context(context_name)
     api.remote(context_name, remote_context=context_name, remote_url=s3_path)
+    # pull data from S3 and check
     api.pull(context_name, uuid=bundle_uuid, localize=True)
     b = api.get(context_name, bundle_name=bundle_name, uuid=bundle_uuid)
     artifact_path = os.path.join(b.local_dir, 'data_cache.zip')
@@ -71,6 +86,8 @@ def test_simple_artifacts(prep_caching_push):
     user_kwargs = user_params.copy()
     user_kwargs.update(input_artifact_kwargs)
     push_result = prep_caching_push(user_kwargs, bundle_name)
+    # three files provided, make sure all of them have been pushed to S3
+    # also check parameters
     data_content_validator(bundle_name, push_result.bundle_id,
                            expected_params=user_params, expected_fields=variables)
 
@@ -84,6 +101,8 @@ def test_different_case_artifacts(prep_caching_push):
     user_kwargs = user_params.copy()
     user_kwargs.update(input_artifact_kwargs)
     push_result = prep_caching_push(user_kwargs, bundle_name)
+    # test if upper and lower case folders are handled correctly
+    # check complex parameters
     data_content_validator(bundle_name, push_result.bundle_id,
                            expected_params=user_params, expected_fields=variables)
 

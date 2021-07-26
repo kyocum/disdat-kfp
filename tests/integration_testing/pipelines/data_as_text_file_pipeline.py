@@ -2,7 +2,6 @@ import kfp
 from kfp import dsl, components
 from caching_util.caching_wrapper import Caching
 from tests import config
-# from mlp_components.common.transformers import mlp_transformer
 from tests.integration_testing.utils import validate_container_execution, validate_container_no_execution
 import time
 

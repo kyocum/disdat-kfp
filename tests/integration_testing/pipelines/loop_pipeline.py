@@ -9,6 +9,7 @@ from caching_util.caching_wrapper import Caching
 def iteration_down(x: int) -> int:
     return x - 1
 
+
 iteration_down_op = components.create_component_from_func(iteration_down, base_image=config.BASE_IMAGE)
 
 validate_execution = components.create_component_from_func(validate_container_execution,

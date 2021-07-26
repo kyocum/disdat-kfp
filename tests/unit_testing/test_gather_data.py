@@ -5,14 +5,15 @@ from disdat import api
 from caching_util.gather_data import gather_data
 import pytest
 from typing import NamedTuple, Callable
+from tests import config
 
-
-s3_path = 's3://disdat-kubeflow-playground'
+s3_path = config.UNIT_TEST_S3_BUCKET
 context_name = 'kfp-caching-plugin-v2-gather-data'
-src_dir = 'test_artifacts/generated_data/outputs'
-unzip_path = 'test_artifacts/unzipped_data'
-output_path = 'test_artifacts/final_output_data'
-zip_file_name = 'test_artifacts/data_cache'
+src_dir = config.ARTIFACT_DIR + '/generated_data'
+unzip_path = config.ARTIFACT_DIR + '/saved_data'
+output_path = config.ARTIFACT_DIR + '/final_output_data'
+zip_file_name = config.ARTIFACT_DIR + '/data_cache'
+
 bundle_name = 'test_gather_data'
 var_list = ['Output', 'use_cache', 'bundle_id']
 
@@ -39,7 +40,7 @@ def prep_gather_data() -> Callable:
     return wrapper
 
 
-def generate_fake_data(variable_list: list, ) -> str:
+def generate_fake_data(variable_list: list) -> str:
     if os.path.isdir(src_dir):
         os.system('rm -r {}'.format(src_dir))
     for var in variable_list:
@@ -69,6 +70,10 @@ def generate_latest_data():
 
 
 def integrity_check():
+    """
+    Make sure the unzipped folder has the same structure as the mock data
+    :return:
+    """
     unzipped = os.listdir(output_path)
     assert len(unzipped) == len(var_list), 'folder number not match'
     for var in var_list:
