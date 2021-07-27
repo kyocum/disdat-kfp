@@ -35,3 +35,17 @@ def test_loop_cache():
     zip_name = loop_pipeline.__name__.replace('.', '_') + '.tar.gz'
     kfp.compiler.Compiler().compile(loop_pipeline.pipeline, zip_name)
     submit_and_validate(zip_name, args='--parameter loop=2')
+
+
+def test_mapper_job():
+    from tests.integration_testing.pipelines import map_reduce_pipeline
+    zip_name = map_reduce_pipeline.__name__.replace('.', '_') + '.tar.gz'
+    kfp.compiler.Compiler().compile(map_reduce_pipeline.pipeline, zip_name)
+    submit_and_validate(zip_name)
+
+
+def test_data_as_file_job():
+    from tests.integration_testing.pipelines import data_as_text_file_pipeline
+    zip_name = data_as_text_file_pipeline.__name__.replace('.', '_') + '.tar.gz'
+    kfp.compiler.Compiler().compile(data_as_text_file_pipeline.pipeline, zip_name)
+    submit_and_validate(zip_name)

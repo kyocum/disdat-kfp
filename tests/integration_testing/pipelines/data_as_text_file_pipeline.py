@@ -6,13 +6,13 @@ from tests.integration_testing.utils import validate_container_execution, valida
 import time
 
 
-def file_producer(word_count: int, data_path: components.OutputTextFile(str)) -> int:
+def file_producer(word_count: int, data_path: components.OutputTextFile()) -> int:
     data_path.write('*' * word_count)
     return word_count
 
 
 def file_consumer(word_count: int,
-                  data_handle: components.InputTextFile(str)) -> float:
+                  data_handle: components.InputTextFile()) -> float:
     import time
     data = data_handle.read()
     assert len(data) == word_count, 'data length does not match'

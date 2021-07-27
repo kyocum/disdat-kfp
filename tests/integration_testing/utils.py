@@ -60,3 +60,49 @@ def submit_and_validate(zip_file, expected_status_code=0, args=None):
         cmd += args
     status = os.system(cmd)
     assert status == expected_status_code, 'pipeline {} yields unwanted result'.format(folder_name)
+
+
+def version_checker(context_name: str,
+                    bundle_name: str,
+                    s3_url: str,
+                    uuid: str = '',
+                    gap: int = 0,
+                    check: bool = False) -> str:
+    from disdat import api
+    import os
+    import logging
+
+    func_name = version_checker.__name__.upper()
+    os.system('dsdt init')
+    api.context(context_name)
+    api.remote(context_name, remote_context=context_name, remote_url=s3_url)
+
+    logging.basicConfig(level=logging.INFO)
+    logging.info('{} - {}'.format(func_name, 'disdat initialized'))
+
+    api.pull(context_name, bundle_name=bundle_name, localize=False)
+
+    if not check:
+        latest_bundle = api.get(context_name, bundle_name)
+        if latest_bundle is None:
+            return ''
+        else:
+            return latest_bundle.uuid
+    else:
+        versions = api.search(context_name, bundle_name)
+        diff = 0
+        found = False
+        for version in versions:
+            logging.info('{} - {}'.format(func_name, version.uuid))
+            if uuid == version.uuid:
+                found = True
+                break
+            diff += 1
+
+        if found is False:
+            diff = -1
+
+        assert diff == gap, 'diff={}, expected diff={}'.format(diff, gap)
+        return ''
+
+
