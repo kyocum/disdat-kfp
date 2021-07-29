@@ -6,13 +6,13 @@ from tests.integration_testing.utils import validate_container_execution, valida
 import time
 
 
-def file_producer(word_count: int, data_path: components.OutputTextFile()) -> int:
+def file_producer(word_count: int, data_path: components.OutputTextFile(str)) -> int:
     data_path.write('*' * word_count)
     return word_count
 
 
 def file_consumer(word_count: int,
-                  data_handle: components.InputTextFile()) -> float:
+                  data_handle: components.InputTextFile(str)) -> float:
     import time
     data = data_handle.read()
     assert len(data) == word_count, 'data length does not match'
@@ -34,7 +34,8 @@ def pipeline():
                       force_rerun_pipeline=False, use_verbose=True)
 
     producer_op = components.create_component_from_func(file_producer,
-                                                        base_image=config.BASE_IMAGE)
+                                                        base_image=config.BASE_IMAGE
+                                                        )
     consumer_op = components.create_component_from_func(file_consumer,
                                                         base_image=config.BASE_IMAGE)
 
