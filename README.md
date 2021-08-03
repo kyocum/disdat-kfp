@@ -1,5 +1,5 @@
 
-![title_image](docs/DisdatTitleFig.jpeg)  
+![title_image](docs/logo.png)  
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE) 
 
 ## disdat-kfp
@@ -45,6 +45,14 @@ different components (e.g, if all data go to the same location), or you can crea
 
 `generated_code_dir`: 'str', where Disdat-kfp dumps generated code for each user component.
 
+#### Example Usage 
+```
+caching = Caching(disdat_context=pipeline_name,
+                  disdat_repo_s3_url='s3://hello-world-bucket',
+                  force_rerun_pipeline=False,
+                  use_verbose=True)
+```
+
 ### `Caching().enable_caching`
 Given a user component, wrap it up with dynamically generated containers that implements data versioning and 
 smart caching. \
@@ -56,3 +64,25 @@ can also override pipeline-level configs using `_disdat_bundle=""", _disdat_forc
 
 **Return**  
 `kfp.dsl.ContainerOp`: the last container `gather_data`. It has exactly the same output signature as the user component.
+
+#### Example Usage 
+```
+from kfp import dsl, components
+
+def hello(msg: str) -> str:
+    print(msg)
+    return 'hello world'
+    
+user_op = components.create_component_from_func(hello,
+                                                base_image=...)
+                                                
+user_op_2 = components.create_component_from_func(hello,
+                                                base_image=...)
+cache_op = caching.enable_caching(user_op, 
+                                msg='Hola', 
+                                _disdat_bundle='hola_bundle', 
+                                _disdat_force_rerun=False, 
+                                _after=[])
+                                
+user_op_2(cache_op.outputs['Output'])
+```
