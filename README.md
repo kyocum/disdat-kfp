@@ -1,8 +1,8 @@
 
-![title_image](docs/logo.png)  
+!<img src="./docs/logo.png" width="128">
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE) 
 
-## disdat-kfp
+## Disdat-kfp
 Disdat is a Python (3.6 +) package for data versioning and pipeline authoring that allows data scientists to create
 , share, and track data products. Disdat-kfp is a plugin built upon Disdat and enables data versioning for Kubeflow Pipeline (KFP).
 
@@ -11,22 +11,12 @@ More specifically, this plugin does the following:
 * **Data Versioning**: All component artifacts are versioned as [bundles](https://disdat.gitbook.io/disdat-documentation/basic-concepts/bundles) on S3; it also records metadata like container image info and commands.
 * **Minimum Intrusion**: Making it easy to refactor existing projects at pipeline level; users don't need to modify any KFP component definitions.
 * **Share Datasets**: Intermediary artifacts can be easily shared between teams with [standardized APIs](https://disdat.gitbook.io/disdat-documentation/examples/short-test-drive/push-pull-using-s3).
+## Get Started 
+Install the package, the pip command will also download the core disdat package if you haven't done so already. 
 
-## Instrumentation
-Since KFP is essentially an orchestrator of containers, we must make sure all containers, not just Python code, get to enjoy the benefits of data versioning. 
-Hence, disdat-kfp injects containers before/after user components to pull/push data to S3 (from now on they are called caching containers).  
-<img src="docs/instrumentation.png" width="512"> 
+`pip install disdat-kfp`
 
-To enable data versioning and caching for a component, simply use the `enable_caching()` wrapper and pass in the component obj. 
-We'll discuss the usage in the next section. 
-
-<img src="./docs/cache_nocache.png" width="512">
-
-As you can see, disdat-kfp injects some containers around user's designated component. The component name and input parameters 
-are used to uniquely identify an execution. Note that you should not use disdat-kfp for tasks that are not idempotent. 
-
-To cache artifacts, the caching containers must take inputs/outputs that match user's component. However, KFP components signatures are hard-coded
-in YAML, disdat-kfp cannot build a container that works for all components. We achieve this goal with dynamic code generation based on user's component specs.
+Get Started with the tutorial notebook! Go to `examples/simple_cached_workflow.ipynb`
 
 ## Documentation
 ### `caching_wrapper.Caching`
@@ -45,13 +35,6 @@ different components (e.g, if all data go to the same location), or you can crea
 
 `generated_code_dir`: 'str', where Disdat-kfp dumps generated code for each user component.
 
-#### Example Usage 
-```
-caching = Caching(disdat_context=pipeline_name,
-                  disdat_repo_s3_url='s3://hello-world-bucket',
-                  force_rerun_pipeline=False,
-                  use_verbose=True)
-```
 
 ### `Caching().enable_caching`
 Given a user component, wrap it up with dynamically generated containers that implements data versioning and 
@@ -68,6 +51,7 @@ can also override pipeline-level configs using `_disdat_bundle=""", _disdat_forc
 #### Example Usage 
 ```
 from kfp import dsl, components
+from disdat_kfp.caching_wrapper import Caching
 
 def hello(msg: str) -> str:
     print(msg)
@@ -78,6 +62,12 @@ user_op = components.create_component_from_func(hello,
                                                 
 user_op_2 = components.create_component_from_func(hello,
                                                 base_image=...)
+                                                
+caching = Caching(disdat_context=pipeline_name,
+                  disdat_repo_s3_url='s3://hello-world-bucket',
+                  force_rerun_pipeline=False,
+                  use_verbose=True)
+                  
 cache_op = caching.enable_caching(user_op, 
                                 msg='Hola', 
                                 _disdat_bundle='hola_bundle', 
@@ -86,3 +76,17 @@ cache_op = caching.enable_caching(user_op,
                                 
 user_op_2(cache_op.outputs['Output'])
 ```
+
+## Instrumentation
+Since KFP is essentially an orchestrator of containers, we must make sure all containers, not just Python code, get to enjoy the benefits of data versioning. 
+Hence, disdat-kfp injects containers before/after user components to pull/push data to S3 (from now on they are called caching containers).  
+<img src="docs/instrumentation.png" width="512"> 
+
+To enable data versioning and caching for a component, simply use the `enable_caching()` wrapper and pass in the component obj. 
+We'll discuss the usage in the next section.
+
+As you can see, disdat-kfp injects some containers around user's designated component. The component name and input parameters 
+are used to uniquely identify an execution. Note that you should not use disdat-kfp for tasks that are not idempotent. 
+
+To cache artifacts, the caching containers must take inputs/outputs that match user's component. However, KFP components signatures are hard-coded
+in YAML, disdat-kfp cannot build a container that works for all components. We achieve this goal with dynamic code generation based on user's component specs.
