@@ -1,5 +1,5 @@
 
-!<img src="./docs/logo.png" width="128">
+<img src="./docs/logo.png" width="128">
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE) 
 
 ## Disdat-kfp
@@ -16,7 +16,7 @@ Install the package, the pip command will also download the core disdat package 
 
 `pip install disdat-kfp`
 
-Get Started with the tutorial notebook! Go to `examples/simple_cached_workflow.ipynb`
+Get Started with the tutorial notebook! Check out how easy it is to version a KFP workflow in `simple_cached_workflow.ipynb`
 
 ## Documentation
 ### `caching_wrapper.Caching`
@@ -89,4 +89,20 @@ As you can see, disdat-kfp injects some containers around user's designated comp
 are used to uniquely identify an execution. Note that you should not use disdat-kfp for tasks that are not idempotent. 
 
 To cache artifacts, the caching containers must take inputs/outputs that match user's component. However, KFP components signatures are hard-coded
-in YAML, disdat-kfp cannot build a container that works for all components. We achieve this goal with dynamic code generation based on user's component specs.
+in YAML, disdat-kfp cannot build a caching container that works for all components. We achieve this goal with dynamic code generation based on user's component specs.
+
+#### `caching_check` ContainerOp
+* Dynamically generated so it has the same input signature as user's component
+* Given a list of input parameters as well as bundle name and context name, generate the `proc name` (a hash of parameters and bundle name)
+* Check if such `proc name` exists in the remote S3 repository
+* If it exists, return the latest bundle `uuid`; otherwise return `None`
+* A choice op will skip the user component if `uuid` is not `None`
+
+#### `caching_push` ContainerOp
+* Dynamically generated so it has the same input signature as user's component plus  `InputPath` parameter for every user output. 
+* It calculates the `proc name` and push the artifacts (passed in as files via `InputPath`) to S3
+
+#### `gather_data` ContainerOp
+* Dynamically generated so it has the same output signature as user's component 
+* It takes inputs from both `caching_check` and `caching_push`. It then downloads the artifacts from S3 and 
+put them into appropriate output folders on local container so that KFP scheduler know where to find them.

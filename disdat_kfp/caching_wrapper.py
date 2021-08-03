@@ -89,7 +89,7 @@ class Caching:
         # aws_profile = kwargs.get('_disdat_aws_profile', self.aws_profile)
 
         for key in ['_disdat_bundle', '_disdat_force_rerun', '_disdat_verbose',
-                    '_after', '_disdat_aws_profile']:
+                    '_after']:
             if key in kwargs:
                 kwargs.pop(key)  # no disdat args should be passed to container
 
@@ -105,10 +105,7 @@ class Caching:
             'dsdt_force_rerun': force_rerun,
             'dsdt_use_verbose': verbose,
             'dsdt_container_used': container.component_spec.implementation.container.image,
-            'dsdt_container_cmd': ' '.join(container.component_spec.implementation.container.command),
-            # 'dsdt_s3_access_key_id': aws_profile.get('aws_access_key_id', None) if aws_profile else None,
-            # 'dsdt_s3_secret_access_key_id': aws_profile.get('aws_secret_access_key', None) if aws_profile else None,
-            # 'dsdt_s3_session_token': aws_profile.get('aws_session_token', None) if aws_profile else None
+            'dsdt_container_cmd': ' '.join(container.component_spec.implementation.container.command)
         }
 
         caching_check_dynamic = self._code_wrapper_generator(
@@ -142,7 +139,7 @@ class Caching:
 
         caching_push_op = components.create_component_from_func(caching_push_dynamic,
                                                                 base_image=self.base_image,
-                                                                packages_to_install=['disdat', 'kfp'])
+                                                                packages_to_install=['disdat'])
 
         gather_data_op = components.create_component_from_func(gather_data_dynamic,
                                                                base_image=self.base_image,

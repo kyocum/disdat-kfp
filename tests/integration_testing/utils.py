@@ -54,12 +54,12 @@ def submit_and_validate(zip_file, expected_status_code=0, args=None):
     print('submitting - ' + dir_name)
     os.makedirs(dir_name , exist_ok=True)
     os.system("tar -xvf {} -C {}".format(zip_file, dir_name))
-    # cmd = 'argo submit --wait --serviceaccount mlp-pipelines {}'.format(
-    #     os.path.join(dir_name, 'pipeline.yaml '))
-    # if args is not None:
-    #     cmd += args
-    # status = os.system(cmd)
-    # assert status == expected_status_code, 'pipeline {} yields unwanted result'.format(folder_name)
+    cmd = 'argo submit --wait --serviceaccount mlp-pipelines {}'.format(
+        os.path.join(dir_name, 'pipeline.yaml '))
+    if args is not None:
+        cmd += args
+    status = os.system(cmd)
+    assert status == expected_status_code, 'pipeline {} yields unwanted result'.format(folder_name)
 
 
 def version_checker(context_name: str,

@@ -113,11 +113,3 @@ def pipeline():
                           uuid=final_uuid.output,
                           context_name=pipeline_name,
                           s3_url='s3://' + config.S3_BUCKET).after(final_res)
-
-    op = None
-
-    cache_op = caching.enable_caching(op,
-                                      param='...',
-                                      _disdat_force_rerun=True)
-
-    print(cache_op)
