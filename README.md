@@ -14,10 +14,45 @@ More specifically, this plugin does the following:
 
 ## Instrumentation
 Since KFP is essentially an orchestrator of containers, we must make sure all containers, not just Python code, get to enjoy the benefits of data versioning. 
-Hence, disdat-kfp injects containers before/after user components to pull/push data to S3.  
-![instrumentation](docs/instrumentation.png)  
+Hence, disdat-kfp injects containers before/after user components to pull/push data to S3 (from now on they are called caching containers).  
+<img src="docs/instrumentation.png" width="512"> 
+
 To enable data versioning and caching for a component, simply use the `enable_caching()` wrapper and pass in the component obj. 
 We'll discuss the usage in the next section. 
 
-![instrumentation](docs/cache_nocache.png)
-<img src="./docs/cache_nocache.png" width="48">
+<img src="./docs/cache_nocache.png" width="512">
+
+As you can see, disdat-kfp injects some containers around user's designated component. The component name and input parameters 
+are used to uniquely identify an execution. Note that you should not use disdat-kfp for tasks that are not idempotent. 
+
+To cache artifacts, the caching containers must take inputs/outputs that match user's component. However, KFP components signatures are hard-coded
+in YAML, disdat-kfp cannot build a container that works for all components. We achieve this goal with dynamic code generation based on user's component specs.
+
+## Documentation
+### `caching_wrapper.Caching`
+Used to create and configure data versioning parameters that Disdat should use. You can eithe create this object and share it between 
+different components (e.g, if all data go to the same location), or you can create one object for each component  
+**Args** \
+`disdat_context`: `str`, the Disdat context in which the artifacts reside  
+
+`disdat_repo_s3_url`: `str`, url of the S3 bucket. For instance `s3://my-bucket`
+
+`force_rerun_pipeline`: `bool`, force rerun all components if set to `True` 
+
+`use_verbose`: `bool`, see more verbose logs if set to `True` 
+
+`caching_base_image`: `str`, the base image that Disdat-kfp uses to create caching containers. For instance `python:3.8.11-slim` 
+
+`generated_code_dir`: 'str', where Disdat-kfp dumps generated code for each user component.
+
+### `Caching().enable_caching`
+Given a user component, wrap it up with dynamically generated containers that implements data versioning and 
+smart caching. \
+**Args** \
+`*args`: Takes one and only one arg - the component object(`kfp.dsl.ContainerOp`) to cache 
+
+`**kwargs`: **All** parameters for the user container are passed in as kwargs. For instance `x=10, s='123'`. You 
+can also override pipeline-level configs using `_disdat_bundle=""", _disdat_force_rerun=True, _disdat_verbose=True`.
+
+**Return**  
+`kfp.dsl.ContainerOp`: the last container `gather_data`. It has exactly the same output signature as the user component.
