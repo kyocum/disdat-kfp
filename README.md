@@ -1,5 +1,5 @@
 
-<img src="./docs/logo.png" width="128">
+<img src="docs/logo.png" width="128">
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) 
 [![PyPI version](https://badge.fury.io/py/disdat.svg)](https://badge.fury.io/py/disdat) 
