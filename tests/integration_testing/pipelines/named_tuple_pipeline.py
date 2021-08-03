@@ -1,7 +1,7 @@
 import collections, kfp, os
 from kfp import dsl, components
 from typing import NamedTuple
-from caching_util.caching_wrapper import Caching
+from disdat_kfp.caching_wrapper import Caching
 from tests import config
 # from mlp_components.common.transformers import mlp_transformer
 from tests.integration_testing.utils import validate_container_execution, validate_container_no_execution

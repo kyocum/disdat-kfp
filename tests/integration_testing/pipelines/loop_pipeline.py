@@ -3,7 +3,7 @@ from tests import config
 import kfp, os
 from tests.integration_testing.utils import validate_container_execution, validate_container_no_execution
 import time
-from caching_util.caching_wrapper import Caching
+from disdat_kfp.caching_wrapper import Caching
 
 
 def iteration_down(x: int) -> int:

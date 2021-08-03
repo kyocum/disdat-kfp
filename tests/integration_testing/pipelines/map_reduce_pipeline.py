@@ -2,7 +2,7 @@ import kfp
 from kfp import components
 from tests import config
 from tests.integration_testing.utils import version_checker
-from caching_util.caching_wrapper import Caching
+from disdat_kfp.caching_wrapper import Caching
 
 
 def generator() -> list:

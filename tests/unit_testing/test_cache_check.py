@@ -1,5 +1,5 @@
 from disdat import api
-from caching_util.cache_check import caching_check
+from disdat_kfp.cache_check import caching_check
 import pytest
 from typing import NamedTuple, Callable
 from tests import config

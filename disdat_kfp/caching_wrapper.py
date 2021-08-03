@@ -4,9 +4,9 @@ import importlib
 import os
 from typing import List, Callable
 import inspect
-from caching_util.cache_check import caching_check
-from caching_util.cache_push import caching_push
-from caching_util.gather_data import gather_data
+from disdat_kfp.cache_check import caching_check
+from disdat_kfp.cache_push import caching_push
+from disdat_kfp.gather_data import gather_data
 import logging
 
 
@@ -142,7 +142,7 @@ class Caching:
 
         caching_push_op = components.create_component_from_func(caching_push_dynamic,
                                                                 base_image=self.base_image,
-                                                                packages_to_install=['disdat'])
+                                                                packages_to_install=['disdat', 'kfp'])
 
         gather_data_op = components.create_component_from_func(gather_data_dynamic,
                                                                base_image=self.base_image,

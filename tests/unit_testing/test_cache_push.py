@@ -1,6 +1,6 @@
 from disdat import api
 import os
-from caching_util.cache_push import caching_push
+from disdat_kfp.cache_push import caching_push
 import pytest
 from typing import NamedTuple, Callable, List
 import inspect

@@ -1,7 +1,7 @@
 import json
 import inspect
 from tests import config
-from caching_util.caching_wrapper import Caching
+from disdat_kfp.caching_wrapper import Caching
 from typing import NamedTuple
 from kfp import components
 

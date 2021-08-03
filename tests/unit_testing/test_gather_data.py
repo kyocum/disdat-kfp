@@ -2,7 +2,7 @@ import os.path
 import shutil
 import inspect
 from disdat import api
-from caching_util.gather_data import gather_data
+from disdat_kfp.gather_data import gather_data
 import pytest
 from typing import NamedTuple, Callable
 from tests import config

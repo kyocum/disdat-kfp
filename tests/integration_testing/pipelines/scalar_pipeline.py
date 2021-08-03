@@ -1,7 +1,8 @@
 import collections, kfp, os
 from kfp import dsl, components
-from caching_util.caching_wrapper import Caching
+from disdat_kfp.caching_wrapper import Caching
 from tests import config
+from mlp_components.common.transformers import mlp_transformer
 from tests.integration_testing.utils import validate_container_execution, validate_container_no_execution
 import time
 
@@ -24,6 +25,7 @@ pipeline_name = __file__.split('/')[-1].replace('.py', '')
     description="test scalar output"
 )
 def pipeline():
+    kfp.dsl.get_pipeline_conf().add_op_transformer(mlp_transformer(model="disdatnoop"))
 
     container_op = components.create_component_from_func(container, base_image=config.BASE_IMAGE)
 

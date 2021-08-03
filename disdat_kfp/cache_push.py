@@ -15,6 +15,7 @@ def caching_push(user_kwargs: dict,
     from disdat import api
     from collections import namedtuple
     import shutil
+    import kfp
 
     bundle_name = disdat_kwargs.get('bundle_name')
     context_name = disdat_kwargs.get('context_name')
@@ -42,6 +43,12 @@ def caching_push(user_kwargs: dict,
     logging.info('{} - {}'.format(func_name, 'initialized'))
     logging.info('{} - {}'.format(func_name, user_kwargs))
     logging.info('{} - {}'.format(func_name, disdat_kwargs))
+
+    host = os.getenv('KUBERNETES_SERVICE_HOST')
+    port = os.getenv('KUBERNETES_SERVICE_PORT')
+    print(os.environ)
+    client = kfp.Client(host=f'http://{host}:{port}')
+    print(client.list_experiments())
 
     os.system("dsdt init")
     api.context(context_name)
