@@ -10,7 +10,7 @@ setup(
 
 
     name='disdat-kfp',
-    version='0.0.1rc2',
+    version='0.0.4',
     packages=['disdat_kfp'],
     install_requires=[
         'disdat >= 0.9.16',
