@@ -108,6 +108,9 @@ in YAML, disdat-kfp cannot build a caching container that works for all componen
 * It takes inputs from both `caching_check` and `caching_push`. It then downloads the artifacts from S3 and 
 put them into appropriate output folders on local container so that KFP scheduler know where to find them.
   
+Below is a data flow chart that describes in detail what these containers do 
+<img src="docs/data_flow.png" width="512"> 
+
 Disdat-kfp generates `caching_check, caching_push, gather_data` code at compile time. The code will be named using
 the following convention `dynamic_OP_NAME_4_USER_CONTAINER_NAME`. Please note that if you have two containers with the 
 same name, one will be replaced by another and your pipeline will fail! 
