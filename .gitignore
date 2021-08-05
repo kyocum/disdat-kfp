@@ -131,3 +131,4 @@ dmypy.json
 **/dsdt_generated_code/
 *.tar.gz
 *.yaml
+/disdat_kfp/version.py

@@ -83,9 +83,7 @@ Since KFP is essentially an orchestrator of containers, we must make sure all co
 Hence, disdat-kfp injects containers before/after user components to pull/push data to S3 (from now on they are called caching containers).  
 <img src="docs/instrumentation.png" width="512"> 
 
-To enable data versioning and caching for a component, simply use the `enable_caching()` wrapper and pass in the component obj. 
-We'll discuss the usage in the next section.
-
+To enable data versioning and caching for a component, simply use the `enable_caching()` wrapper and pass in the component object.
 As you can see, disdat-kfp injects some containers around user's designated component. The component name and input parameters 
 are used to uniquely identify an execution. Note that you should not use disdat-kfp for tasks that are not idempotent. 
 

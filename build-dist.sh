@@ -6,7 +6,8 @@ python3 -m build
 
 
 echo "upload to TestPyPi"
-ss
+python3 -m twine upload --repository testpypi dist/*
+
 echo "Create a new venv for testing"
 rm -rf .testenv
 python3 -m venv .testenv
