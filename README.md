@@ -2,7 +2,8 @@
 <img src="docs/logo.png" width="256">
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) 
-[![PyPI version](https://badge.fury.io/py/disdat.svg)](https://badge.fury.io/py/disdat) 
+
+[comment]: <> ([![PyPI version]&#40;https://badge.fury.io/py/disdat.svg&#41;]&#40;https://badge.fury.io/py/disdat&#41; )
 ## Disdat-kfp
 Disdat is a Python (3.6 +) package for data versioning and pipeline authoring that allows data scientists to create
 , share, and track data products. Disdat-kfp is a plugin built upon Disdat and enables data versioning for Kubeflow Pipeline (KFP).

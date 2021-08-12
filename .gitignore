@@ -132,3 +132,4 @@ dmypy.json
 *.tar.gz
 *.yaml
 /disdat_kfp/version.py
+/demo.ipynb
